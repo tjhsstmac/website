@@ -1,7 +1,9 @@
 #!/bin/sh
 set -eu
 
-npm ci
-npm run build
+if [ ! -f dist/index.html ]; then
+    echo "dist/index.html not found. Build the site before restarting Director."
+    exit 1
+fi
 
-exec ./node_modules/.bin/vite preview --host 0.0.0.0 --port "${PORT:-80}" --strictPort
+exec npx serve -s dist -l "${PORT:-80}"
