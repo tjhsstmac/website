@@ -14,17 +14,20 @@ export default function PhoneHeader({ leftSide }: PhoneHeaderProps) {
         if (leftSide)
             return;
 
-        let id: NodeJS.Timeout;
+        let intervalId: NodeJS.Timeout;
         const time = new Date();
         const delay = 60000 - (time.getSeconds() * 1000 + time.getMilliseconds());
 
-        setTimeout(() => {
+        const timeoutId = setTimeout(() => {
             setCurrentTime(getPhoneTime());
-            id = setInterval(() => setCurrentTime(getPhoneTime()), 60000);
+            intervalId = setInterval(() => setCurrentTime(getPhoneTime()), 60000);
         }, delay);
         
-        return () => clearInterval(id);
-    }, []);
+        return () => {
+            clearTimeout(timeoutId);
+            clearInterval(intervalId);
+        };
+    }, [leftSide]);
 
     return (
         <div className={`flex justify-between min-w-full items-center px-[2%] py-1 h-8 text-white z-20 ${divergence ? "mb-auto bg-gray-800 bg-opacity-40" : ""}`}>

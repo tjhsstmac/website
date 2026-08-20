@@ -48,8 +48,12 @@ To preview the site, you can use,
 npm run preview
 ```
 
-However, if you want to run the build on a production server (e.g., for Director), 
-you can use the `serve` package,
+Director runs `run.sh` when serving the dynamic site. The checked-in script installs
+dependencies from the lockfile, builds the site, and serves `dist` on Director's
+internal port.
+
+If you want to run the build manually on a production server, you can use the
+`serve` package,
 ```bash
 npm i -g serve
 npx serve dist

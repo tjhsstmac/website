@@ -34,7 +34,7 @@ export default function PhoneScreenList() {
         }
     };
 
-    const handleSwipeRelease = (_event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    const handleSwipeRelease = () => {
         if (isDragging) {
             const threshold = screenRef.current ? screenRef.current.offsetWidth * 0.4 : 0;
 
