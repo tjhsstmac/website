@@ -19,7 +19,7 @@ To contribute to the site, you will first need to install:
 
 Then, you can clone the repository onto your computer by running:
 ```bash
-git clone https://github.com/tjmadclub/website
+git clone https://github.com/tjhsstmac/website
 ```
 
 `cd` into the new directory, and install the required packages:
@@ -28,6 +28,33 @@ npm install
 ```
 
 Now, the setup is complete and you can start contributing!
+
+### Development Workflow
+
+Use a branch for changes so GitHub can test them before they go live:
+```bash
+git checkout main
+git pull origin main
+git checkout -b feature/my-change
+npm run dev
+```
+
+Before pushing, run:
+```bash
+npm run lint
+npm run build
+```
+
+Commit both the source changes and the updated `dist/` output:
+```bash
+git add path/to/changed-files dist
+git commit -m "feat: describe the change"
+git push origin feature/my-change
+```
+
+Open a pull request on GitHub. The CI workflow runs lint and build against the
+branch. Merge the pull request into `main` only after the checks pass and the
+local preview looks correct.
 
 ### Helpful Info
 
@@ -48,13 +75,20 @@ To preview the site, you can use,
 npm run preview
 ```
 
-Director runs `run.sh` when serving the dynamic site. The checked-in script installs
-dependencies from the lockfile, builds the site, and serves `dist` on Director's
-internal port.
+Director runs `/site/run.sh`, which should switch into `/site/public` and execute
+the checked-in `run.sh`. Director's current Node image is too old to build this
+Vite app, so `dist/` is committed and `run.sh` serves the prebuilt bundle on
+Director's internal port.
 
-If you want to run the build manually on a production server, you can use the
-`serve` package,
+After merging to `main`, deploy intentionally from the Director terminal:
 ```bash
-npm i -g serve
-npx serve dist
+cd /site/public
+wget -O site.tar.gz https://github.com/tjhsstmac/website/archive/refs/heads/main.tar.gz
+tar -xzf site.tar.gz --strip-components=1
+rm site.tar.gz
+chmod +x /site/public/run.sh
+printf '%s\n' '#!/bin/sh' 'set -eu' '' 'cd /site/public' 'exec ./run.sh' > /site/run.sh
+chmod +x /site/run.sh
 ```
+
+Then click **Restart service** in Director.
